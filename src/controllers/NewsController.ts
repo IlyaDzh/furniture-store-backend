@@ -1,7 +1,6 @@
 import express from "express";
 
 import { NewsModel } from "../models";
-import { INews } from "../models/News";
 
 class NewsController {
     showAll(req: express.Request, res: express.Response) {
