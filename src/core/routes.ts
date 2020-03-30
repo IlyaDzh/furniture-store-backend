@@ -1,10 +1,12 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 import { UserController, NewsController } from "../controllers";
 // import { checkAuth } from "../middlewares";
 
 const createRoutes = (app: express.Express) => {
+    app.use(cors());
     app.use(bodyParser.json());
     // app.use(checkAuth);
 

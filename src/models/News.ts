@@ -5,7 +5,6 @@ export interface INews extends Document {
     title: string;
     short_description: string;
     description: Array<Object>;
-    date: Date;
 }
 
 const NewsSchema = new Schema(
@@ -31,11 +30,7 @@ const NewsSchema = new Schema(
                     required: "Content is required"
                 }
             }
-        ],
-        date: {
-            type: Date,
-            default: new Date()
-        }
+        ]
     },
     {
         timestamps: true

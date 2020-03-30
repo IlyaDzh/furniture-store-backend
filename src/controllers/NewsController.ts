@@ -4,15 +4,26 @@ import { NewsModel } from "../models";
 
 class NewsController {
     showAll(req: express.Request, res: express.Response) {
-        NewsModel.find({}, (err, news) => {
-            if (err) {
-                return res.status(404).json({
-                    status: "Error",
-                    message: "News list is empty"
+        const pageOptions = {
+            page: parseInt(req.query.page) || 1,
+            limit: 9
+        };
+
+        NewsModel.find()
+            .skip((pageOptions.page - 1) * pageOptions.limit)
+            .limit(pageOptions.limit)
+            .exec((err, news) => {
+                if (err) {
+                    return res.status(500).json(err);
+                }
+                NewsModel.countDocuments({}, (err, count) => {
+                    res.status(200).json({
+                        page: pageOptions.page,
+                        total_page: Math.ceil(count / pageOptions.limit),
+                        results: news
+                    });
                 });
-            }
-            return res.json(news);
-        });
+            });
     }
 
     showById(req: express.Request, res: express.Response) {
