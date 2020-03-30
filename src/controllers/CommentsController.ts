@@ -1,51 +1,41 @@
 import express from "express";
 
-import { NewsModel } from "../models";
+import { CommentsModel } from "../models";
 
-class NewsController {
+class CommentsController {
     showAll(req: express.Request, res: express.Response) {
         const pageOptions = {
             page: parseInt(req.query.page) || 1,
             limit: 9
         };
 
-        NewsModel.find()
+        CommentsModel.find()
             .skip((pageOptions.page - 1) * pageOptions.limit)
             .limit(pageOptions.limit)
-            .exec((err, news) => {
+            .exec((err, comments) => {
                 if (err) {
                     return res.status(500).json(err);
                 }
-                NewsModel.countDocuments({}, (err, count) => {
+                CommentsModel.countDocuments({}, (err, count) => {
                     res.status(200).json({
                         page: pageOptions.page,
                         total_page: Math.ceil(count / pageOptions.limit),
-                        results: news
+                        results: comments
                     });
                 });
             });
     }
 
-    showById(req: express.Request, res: express.Response) {
-        const id: string = req.params.id;
-        NewsModel.findById(id, (err, news) => {
-            if (err) {
-                return res.status(404).json({ message: "News not found" });
-            }
-            res.json(news);
-        });
-    }
-
     create(req: express.Request, res: express.Response) {
         const postData = {
+            name: req.body.name,
             image: req.body.image,
-            title: req.body.title,
-            short_description: req.body.short_description,
-            description: req.body.description,
+            text: req.body.text,
             date: req.body.date
         };
-        const news = new NewsModel(postData);
-        news.save()
+        const comment = new CommentsModel(postData);
+        comment
+            .save()
             .then((obj: any) => {
                 res.json(obj);
             })
@@ -57,26 +47,25 @@ class NewsController {
     update(req: express.Request, res: express.Response) {
         const id: string = req.params.id;
         const postData = {
+            name: req.body.name,
             image: req.body.image,
-            title: req.body.title,
-            short_description: req.body.short_description,
-            description: req.body.description,
+            text: req.body.text,
             date: req.body.date
         };
-        NewsModel.findByIdAndUpdate(id, { $set: postData }, { new: true }, (err, news) => {
+        CommentsModel.findByIdAndUpdate(id, { $set: postData }, { new: true }, (err, comment) => {
             if (err) {
-                return res.status(404).json({ message: "News not found" });
+                return res.status(404).json({ message: "Comment not found" });
             }
-            res.json(news);
+            res.json(comment);
         });
     }
 
     delete(req: express.Request, res: express.Response) {
         const id: string = req.params.id;
-        NewsModel.findOneAndRemove({ _id: id })
-            .then(news => {
-                if (news) {
-                    res.json({ message: `News '${news.title}' deleted` });
+        CommentsModel.findOneAndRemove({ _id: id })
+            .then(comment => {
+                if (comment) {
+                    res.json({ message: `Comment by author '${comment.name}' deleted` });
                 }
             })
             .catch(() => {
@@ -85,4 +74,4 @@ class NewsController {
     }
 }
 
-export default NewsController;
+export default CommentsController;
