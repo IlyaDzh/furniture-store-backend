@@ -20,12 +20,14 @@ const createRoutes = (app: express.Express) => {
     app.delete("/user/:id", User.delete);
 
     app.get("/news", News.showAll);
+    app.get("/news/last", News.showLast);
     app.get("/news/:id", News.showById);
     app.post("/news", News.create);
     app.put("/news/:id", News.update);
     app.delete("/news/:id", News.delete);
 
     app.get("/comments", Comments.showAll);
+    app.get("/comments/last", Comments.showLast);
     app.post("/comments", Comments.create);
     app.put("/comments/:id", Comments.update);
     app.delete("/comments/:id", Comments.delete);

@@ -36,6 +36,18 @@ class NewsController {
         });
     }
 
+    showLast(req: express.Request, res: express.Response) {
+        NewsModel.find({}, '_id image title short_description date')
+            .sort({ date: -1 })
+            .limit(3)
+            .exec((err, news) => {
+                if (err) {
+                    return res.status(500).json(err);
+                }
+                res.status(200).json(news);
+            });
+    }
+
     create(req: express.Request, res: express.Response) {
         const postData = {
             image: req.body.image,

@@ -26,6 +26,18 @@ class CommentsController {
             });
     }
 
+    showLast(req: express.Request, res: express.Response) {
+        CommentsModel.find({}, "_id name image text date")
+            .sort({ date: -1 })
+            .limit(3)
+            .exec((err, comments) => {
+                if (err) {
+                    return res.status(500).json(err);
+                }
+                res.status(200).json(comments);
+            });
+    }
+
     create(req: express.Request, res: express.Response) {
         const postData = {
             name: req.body.name,
