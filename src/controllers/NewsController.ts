@@ -17,9 +17,17 @@ class NewsController {
                     return res.status(500).json(err);
                 }
                 NewsModel.countDocuments({}, (err, count) => {
+                    const maxPage = Math.ceil(count / pageOptions.limit);
+
+                    if (pageOptions.page > maxPage) {
+                        return res.status(404).json({
+                            message: `Page ${pageOptions.page} not found`
+                        });
+                    }
+
                     res.status(200).json({
                         page: pageOptions.page,
-                        total_page: Math.ceil(count / pageOptions.limit),
+                        total_page: maxPage,
                         results: news
                     });
                 });
@@ -37,7 +45,7 @@ class NewsController {
     }
 
     showLast(req: express.Request, res: express.Response) {
-        NewsModel.find({}, '_id image title short_description date')
+        NewsModel.find({}, "_id image title short_description date")
             .sort({ date: -1 })
             .limit(3)
             .exec((err, news) => {
@@ -59,10 +67,10 @@ class NewsController {
         const news = new NewsModel(postData);
         news.save()
             .then((obj: any) => {
-                res.json(obj);
+                res.status(200).json(obj);
             })
             .catch(reason => {
-                res.status(404).json({ message: reason.message });
+                res.status(400).json({ message: reason.message });
             });
     }
 
@@ -75,12 +83,17 @@ class NewsController {
             description: req.body.description,
             date: req.body.date
         };
-        NewsModel.findByIdAndUpdate(id, { $set: postData }, { new: true }, (err, news) => {
-            if (err) {
-                return res.status(404).json({ message: "News not found" });
+        NewsModel.findByIdAndUpdate(
+            id,
+            { $set: postData },
+            { new: true },
+            (err, news) => {
+                if (err) {
+                    return res.status(404).json({ message: "News not found" });
+                }
+                res.json(news);
             }
-            res.json(news);
-        });
+        );
     }
 
     delete(req: express.Request, res: express.Response) {
@@ -88,11 +101,13 @@ class NewsController {
         NewsModel.findOneAndRemove({ _id: id })
             .then(news => {
                 if (news) {
-                    res.json({ message: `News '${news.title}' deleted` });
+                    res.status(200).json({
+                        message: `News '${news.title}' deleted`
+                    });
                 }
             })
             .catch(() => {
-                res.json({ message: `News not found` });
+                res.status(404).json({ message: `News not found` });
             });
     }
 }

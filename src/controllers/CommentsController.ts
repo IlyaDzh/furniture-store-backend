@@ -17,6 +17,14 @@ class CommentsController {
                     return res.status(500).json(err);
                 }
                 CommentsModel.countDocuments({}, (err, count) => {
+                    const maxPage = Math.ceil(count / pageOptions.limit);
+
+                    if (pageOptions.page > maxPage) {
+                        return res.status(404).json({
+                            message: `Page ${pageOptions.page} not found`
+                        });
+                    }
+
                     res.status(200).json({
                         page: pageOptions.page,
                         total_page: Math.ceil(count / pageOptions.limit),
@@ -49,7 +57,7 @@ class CommentsController {
         comment
             .save()
             .then((obj: any) => {
-                res.json(obj);
+                res.status(200).json(obj);
             })
             .catch(reason => {
                 res.status(404).json({ message: reason.message });
@@ -64,12 +72,17 @@ class CommentsController {
             text: req.body.text,
             date: req.body.date
         };
-        CommentsModel.findByIdAndUpdate(id, { $set: postData }, { new: true }, (err, comment) => {
-            if (err) {
-                return res.status(404).json({ message: "Comment not found" });
+        CommentsModel.findByIdAndUpdate(
+            id,
+            { $set: postData },
+            { new: true },
+            (err, comment) => {
+                if (err) {
+                    return res.status(404).json({ message: "Comment not found" });
+                }
+                res.json(comment);
             }
-            res.json(comment);
-        });
+        );
     }
 
     delete(req: express.Request, res: express.Response) {
@@ -77,11 +90,13 @@ class CommentsController {
         CommentsModel.findOneAndRemove({ _id: id })
             .then(comment => {
                 if (comment) {
-                    res.json({ message: `Comment by author '${comment.name}' deleted` });
+                    res.status(200).json({
+                        message: `Comment by author '${comment.name}' deleted`
+                    });
                 }
             })
             .catch(() => {
-                res.json({ message: `News not found` });
+                res.status(404).json({ message: `News not found` });
             });
     }
 }

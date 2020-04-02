@@ -27,7 +27,7 @@ class UserController {
         const user = new UserModel(postData);
         user.save()
             .then((obj: any) => {
-                res.json(obj);
+                res.status(200).json(obj);
             })
             .catch(reason => {
                 res.status(404).json({ message: reason.message });
@@ -49,13 +49,11 @@ class UserController {
 
             if (user.password === postData.password) {
                 const token = createJWTToken(user);
-                res.json({
-                    status: "Success",
+                res.status(200).json({
                     token
                 });
             } else {
-                res.status(403).json({
-                    status: "Error",
+                res.status(401).json({
                     message: "Incorrect password or email"
                 });
             }
@@ -67,11 +65,13 @@ class UserController {
         UserModel.findOneAndRemove({ _id: id })
             .then(user => {
                 if (user) {
-                    res.json({ message: `User '${user.fullname}' deleted` });
+                    res.status(200).json({
+                        message: `User '${user.fullname}' deleted`
+                    });
                 }
             })
             .catch(() => {
-                res.json({ message: `User not found` });
+                res.status(404).json({ message: `User not found` });
             });
     }
 }
