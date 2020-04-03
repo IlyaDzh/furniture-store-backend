@@ -70,7 +70,7 @@ class NewsController {
                 res.status(200).json(obj);
             })
             .catch(reason => {
-                res.status(400).json({ message: reason.message });
+                res.status(500).json({ message: reason.message });
             });
     }
 
@@ -91,7 +91,7 @@ class NewsController {
                 if (err) {
                     return res.status(404).json({ message: "News not found" });
                 }
-                res.json(news);
+                res.status(200).json(news);
             }
         );
     }

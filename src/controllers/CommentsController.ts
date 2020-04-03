@@ -60,7 +60,7 @@ class CommentsController {
                 res.status(200).json(obj);
             })
             .catch(reason => {
-                res.status(404).json({ message: reason.message });
+                res.status(500).json({ message: reason.message });
             });
     }
 
@@ -80,7 +80,7 @@ class CommentsController {
                 if (err) {
                     return res.status(404).json({ message: "Comment not found" });
                 }
-                res.json(comment);
+                res.status(200).json(comment);
             }
         );
     }

@@ -30,7 +30,7 @@ class UserController {
                 res.status(200).json(obj);
             })
             .catch(reason => {
-                res.status(404).json({ message: reason.message });
+                res.status(500).json({ message: reason.message });
             });
     }
 

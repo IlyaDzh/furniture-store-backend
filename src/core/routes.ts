@@ -2,7 +2,12 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 
-import { UserController, NewsController, CommentsController } from "../controllers";
+import {
+    UserController,
+    FactoryController,
+    NewsController,
+    CommentsController
+} from "../controllers";
 // import { checkAuth } from "../middlewares";
 
 const createRoutes = (app: express.Express) => {
@@ -11,6 +16,7 @@ const createRoutes = (app: express.Express) => {
     // app.use(checkAuth);
 
     const User = new UserController();
+    const Factory = new FactoryController();
     const News = new NewsController();
     const Comments = new CommentsController();
 
@@ -18,6 +24,13 @@ const createRoutes = (app: express.Express) => {
     app.post("/user/signup", User.create);
     app.post("/user/signin", User.login);
     app.delete("/user/:id", User.delete);
+
+    app.get("/info/about", Factory.showAbout);
+    app.get("/info/service", Factory.showService);
+    app.get("/info/contacts", Factory.showContacts);
+    app.put("/info/about", Factory.updateAbout);
+    app.put("/info/service", Factory.updateService);
+    app.put("/info/contacts", Factory.updateContacts);
 
     app.get("/news", News.showAll);
     app.get("/news/last", News.showLast);
