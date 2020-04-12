@@ -1,8 +1,8 @@
 import express from "express";
+import bcrypt from "bcrypt";
 
 import { UserModel } from "../models";
 import { IUser } from "../models/User";
-import { createJWTToken } from "../utils";
 
 class UserController {
     getMe = (req: any, res: express.Response) => {
@@ -47,10 +47,10 @@ class UserController {
                 });
             }
 
-            if (user.password === postData.password) {
-                const token = createJWTToken(user);
+            if (bcrypt.compareSync(postData.password, user.password)) {
                 res.status(200).json({
-                    token
+                    status: "Success",
+                    isAuth: true
                 });
             } else {
                 res.status(401).json({
