@@ -8,10 +8,12 @@ import {
     NewsController,
     CommentsController
 } from "../controllers";
+import { checkAuth } from "../middlewares";
 
 const createRoutes = (app: express.Express) => {
     app.use(cors());
     app.use(bodyParser.json());
+    app.use(checkAuth);
 
     const User = new UserController();
     const Factory = new FactoryController();
@@ -21,7 +23,6 @@ const createRoutes = (app: express.Express) => {
     app.get("/user/me", User.getMe);
     app.post("/user/signup", User.create);
     app.post("/user/signin", User.login);
-    app.delete("/user/:id", User.delete);
 
     app.get("/info/about", Factory.showAbout);
     app.get("/info/service", Factory.showService);

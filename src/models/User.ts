@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
 import isEmail from "validator/lib/isEmail";
-import isMobilePhone from "validator/lib/isMobilePhone";
 import { generatePasswordHash } from "../utils";
 
 export interface IUser extends Document {
@@ -19,8 +18,7 @@ const UserSchema = new Schema(
         },
         phone: {
             type: String,
-            required: "Phone number is required!",
-            validate: [isMobilePhone, "Invalid phone number"]
+            required: "Phone number is required!"
         },
         email: {
             type: String,

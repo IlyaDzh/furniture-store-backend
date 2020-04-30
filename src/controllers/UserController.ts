@@ -3,17 +3,18 @@ import bcrypt from "bcrypt";
 
 import { UserModel } from "../models";
 import { IUser } from "../models/User";
+import { createJWTToken } from "../utils";
 
 class UserController {
     getMe = (req: any, res: express.Response) => {
-        const id: string = req.user && req.user._id;
-        UserModel.findById(id, (err, user: IUser) => {
+        const userId: string =  req.user && req.user._id;
+        UserModel.findById(userId, (err, user: IUser) => {
             if (err || !user) {
                 return res.status(404).json({
                     message: "User not found"
                 });
             }
-            res.json(user);
+            res.status(200).json(user);
         });
     };
 
@@ -48,9 +49,10 @@ class UserController {
             }
 
             if (bcrypt.compareSync(postData.password, user.password)) {
+                const token: string = createJWTToken(user);
                 res.status(200).json({
                     status: "Success",
-                    isAuth: true
+                    token
                 });
             } else {
                 res.status(401).json({
@@ -58,21 +60,6 @@ class UserController {
                 });
             }
         });
-    }
-
-    delete(req: express.Request, res: express.Response) {
-        const id: string = req.params.id;
-        UserModel.findOneAndRemove({ _id: id })
-            .then(user => {
-                if (user) {
-                    res.status(200).json({
-                        message: `User '${user.fullname}' deleted`
-                    });
-                }
-            })
-            .catch(() => {
-                res.status(404).json({ message: `User not found` });
-            });
     }
 }
 
