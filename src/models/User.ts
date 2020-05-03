@@ -47,6 +47,17 @@ UserSchema.pre("save", async function (next) {
     user.password = await generatePasswordHash(user.password);
 });
 
+UserSchema.pre("findOneAndUpdate", async function (next) {
+    // @ts-ignore
+    const user: any = this._update;
+
+    if (!user.$set.password) {
+        return next();
+    }
+
+    user.$set.password = await generatePasswordHash(user.$set.password);
+});
+
 const UserModel = mongoose.model<IUser>("User", UserSchema);
 
 export default UserModel;

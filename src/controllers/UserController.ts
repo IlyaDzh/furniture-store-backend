@@ -7,7 +7,7 @@ import { createJWTToken } from "../utils";
 
 class UserController {
     getMe = (req: any, res: express.Response) => {
-        const userId: string =  req.user && req.user._id;
+        const userId: string = req.user && req.user._id;
         UserModel.findById(userId, (err, user: IUser) => {
             if (err || !user) {
                 return res.status(404).json({
@@ -21,7 +21,6 @@ class UserController {
     create(req: express.Request, res: express.Response) {
         const postData = {
             fullname: req.body.fullname,
-            phone: req.body.phone,
             email: req.body.email,
             password: req.body.password
         };
@@ -60,6 +59,28 @@ class UserController {
                 });
             }
         });
+    }
+
+    update(req: any, res: express.Response) {
+        const userId: string = req.user && req.user._id;
+        const postData: any = {
+            fullname: req.body.fullname,
+            phone: req.body.phone,
+            address: req.body.address
+        };
+        if (req.body.password) {
+            postData.password = req.body.password;
+        }
+
+        UserModel.findByIdAndUpdate(userId, { $set: postData }, { new: true }).exec(
+            (err, user) => {
+                if (err || !user) {
+                    return res.status(404).json({ message: "User not found" });
+                }
+
+                res.status(200).json(user);
+            }
+        );
     }
 }
 

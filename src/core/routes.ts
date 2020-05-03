@@ -23,6 +23,7 @@ const createRoutes = (app: express.Express) => {
     app.get("/user/me", User.getMe);
     app.post("/user/signup", User.create);
     app.post("/user/signin", User.login);
+    app.put("/user/update", User.update);
 
     app.get("/info/about", Factory.showAbout);
     app.get("/info/service", Factory.showService);
