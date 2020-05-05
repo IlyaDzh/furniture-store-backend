@@ -1,22 +1,22 @@
 import express from "express";
 
-import { CommentsModel } from "../models";
+import { CommentModel } from "../models";
 
-class CommentsController {
+class CommentController {
     showAll(req: express.Request, res: express.Response) {
         const pageOptions = {
             page: parseInt(req.query.page) || 1,
             limit: 9
         };
 
-        CommentsModel.find()
+        CommentModel.find()
             .skip((pageOptions.page - 1) * pageOptions.limit)
             .limit(pageOptions.limit)
             .exec((err, comments) => {
                 if (err) {
                     return res.status(500).json(err);
                 }
-                CommentsModel.countDocuments({}, (err, count) => {
+                CommentModel.countDocuments({}, (err, count) => {
                     const maxPage = Math.ceil(count / pageOptions.limit);
 
                     if (pageOptions.page > maxPage) {
@@ -35,7 +35,7 @@ class CommentsController {
     }
 
     showLast(req: express.Request, res: express.Response) {
-        CommentsModel.find({}, "_id name image text date")
+        CommentModel.find({}, "_id name image text date")
             .sort({ date: -1 })
             .limit(3)
             .exec((err, comments) => {
@@ -53,7 +53,7 @@ class CommentsController {
             text: req.body.text,
             date: req.body.date
         };
-        const comment = new CommentsModel(postData);
+        const comment = new CommentModel(postData);
         comment
             .save()
             .then((obj: any) => {
@@ -72,7 +72,7 @@ class CommentsController {
             text: req.body.text,
             date: req.body.date
         };
-        CommentsModel.findByIdAndUpdate(
+        CommentModel.findByIdAndUpdate(
             id,
             { $set: postData },
             { new: true },
@@ -87,7 +87,7 @@ class CommentsController {
 
     delete(req: express.Request, res: express.Response) {
         const id: string = req.params.id;
-        CommentsModel.findOneAndRemove({ _id: id })
+        CommentModel.findOneAndRemove({ _id: id })
             .then(comment => {
                 if (comment) {
                     res.status(200).json({
@@ -101,4 +101,4 @@ class CommentsController {
     }
 }
 
-export default CommentsController;
+export default CommentController;

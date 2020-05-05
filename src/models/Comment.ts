@@ -1,13 +1,13 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IComments extends Document {
+export interface IComment extends Document {
     name: string;
     image: string;
     text: string;
     date: Date;
 }
 
-const CommentsSchema = new Schema(
+const CommentSchema = new Schema(
     {
         name: {
             type: String,
@@ -28,6 +28,6 @@ const CommentsSchema = new Schema(
     }
 );
 
-const CommentsModel = mongoose.model<IComments>("Comments", CommentsSchema);
+const CommentModel = mongoose.model<IComment>("Comment", CommentSchema);
 
-export default CommentsModel;
+export default CommentModel;

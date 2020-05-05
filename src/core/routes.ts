@@ -6,7 +6,8 @@ import {
     UserController,
     FactoryController,
     NewsController,
-    CommentsController
+    CommentController,
+    OrderController
 } from "../controllers";
 import { checkAuth } from "../middlewares";
 
@@ -18,7 +19,8 @@ const createRoutes = (app: express.Express) => {
     const User = new UserController();
     const Factory = new FactoryController();
     const News = new NewsController();
-    const Comments = new CommentsController();
+    const Comment = new CommentController();
+    const Order = new OrderController();
 
     app.get("/user/me", User.getMe);
     app.post("/user/signup", User.create);
@@ -39,11 +41,14 @@ const createRoutes = (app: express.Express) => {
     app.put("/news/:id", News.update);
     app.delete("/news/:id", News.delete);
 
-    app.get("/comments", Comments.showAll);
-    app.get("/comments/last", Comments.showLast);
-    app.post("/comments", Comments.create);
-    app.put("/comments/:id", Comments.update);
-    app.delete("/comments/:id", Comments.delete);
+    app.get("/comments", Comment.showAll);
+    app.get("/comments/last", Comment.showLast);
+    app.post("/comments", Comment.create);
+    app.put("/comments/:id", Comment.update);
+    app.delete("/comments/:id", Comment.delete);
+
+    app.get("/orders", Order.showAll);
+    app.post("/orders/create", Order.create);
 };
 
 export default createRoutes;
