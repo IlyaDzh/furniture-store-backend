@@ -32,9 +32,9 @@ const ProductSchema = new Schema(
         images: [String],
         chars: {
             shape: String,
-            material: String,
+            material: [String],
             style: String,
-            color: String,
+            color: [String],
             collection: String
         },
         price: {

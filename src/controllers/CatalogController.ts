@@ -5,8 +5,8 @@ import { ICatalog } from "../models/Catalog";
 
 class CatalogController {
     showById(req: express.Request, res: express.Response) {
-        const id: string = req.params.id;
-        CatalogModel.findById(id)
+        const path: string = req.params.path;
+        CatalogModel.find({ path: path })
             .populate("products")
             .exec((err, catalog) => {
                 if (err || !catalog) {

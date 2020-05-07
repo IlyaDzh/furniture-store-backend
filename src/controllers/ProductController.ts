@@ -47,6 +47,26 @@ class ProductController {
                 res.status(500).json({ message: reason.message });
             });
     }
+
+    getNew(req: express.Request, res: express.Response) {
+        ProductModel.find({ new: true }, (err, products) => {
+            if (err || !products) {
+                return res.status(404).json({ message: "New products not found" });
+            }
+            res.json(products);
+        });
+    }
+
+    getPopular(req: express.Request, res: express.Response) {
+        ProductModel.find({ hit: true }, (err, products) => {
+            if (err || !products) {
+                return res
+                    .status(404)
+                    .json({ message: "Popular products not found" });
+            }
+            res.json(products);
+        });
+    }
 }
 
 export default ProductController;
