@@ -31,7 +31,7 @@ const createRoutes = (app: express.Express) => {
     app.post("/user/signin", User.login);
     app.put("/user/update", User.update);
 
-    app.get("/catalog/:path", Catalog.showById);
+    app.get("/catalog/:path", Catalog.showByPath);
     app.post("/catalog/create", Catalog.create);
 
     app.get("/product/new", Product.getNew);

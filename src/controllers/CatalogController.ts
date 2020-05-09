@@ -4,15 +4,15 @@ import { CatalogModel } from "../models";
 import { ICatalog } from "../models/Catalog";
 
 class CatalogController {
-    showById(req: express.Request, res: express.Response) {
+    showByPath(req: express.Request, res: express.Response) {
         const path: string = req.params.path;
-        CatalogModel.find({ path: path })
+        CatalogModel.findOne({ path: path })
             .populate("products")
             .exec((err, catalog) => {
                 if (err || !catalog) {
                     return res.status(404).json({ message: "Catalog not found" });
                 }
-                res.json(catalog);
+                res.status(200).json(catalog);
             });
     }
 

@@ -8,6 +8,7 @@ export interface IUser extends Document {
     email: string;
     password: string;
     address: string;
+    orders: string;
 }
 
 const UserSchema = new Schema(
@@ -30,7 +31,13 @@ const UserSchema = new Schema(
             type: String,
             required: "Password is required"
         },
-        address: String
+        address: String,
+        orders: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "Order"
+            }
+        ]
     },
     {
         timestamps: true

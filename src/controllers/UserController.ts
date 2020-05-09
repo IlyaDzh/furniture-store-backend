@@ -8,14 +8,20 @@ import { createJWTToken } from "../utils";
 class UserController {
     getMe = (req: any, res: express.Response) => {
         const userId: string = req.user && req.user._id;
-        UserModel.findById(userId, (err, user: IUser) => {
-            if (err || !user) {
-                return res.status(404).json({
-                    message: "User not found"
-                });
-            }
-            res.status(200).json(user);
-        });
+        UserModel.findById(userId)
+            .populate({
+                path: "orders",
+                select: "_id createdAt cart status ",
+                populate: { path: "cart.product", select: "_id name price" }
+            })
+            .exec((err, user: IUser) => {
+                if (err || !user) {
+                    return res.status(404).json({
+                        message: "User not found"
+                    });
+                }
+                res.status(200).json(user);
+            });
     };
 
     create(req: express.Request, res: express.Response) {

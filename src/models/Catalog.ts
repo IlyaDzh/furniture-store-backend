@@ -4,7 +4,7 @@ export interface ICatalog extends Document {
     title: string;
     path: string;
     categories: Array<Object>;
-    products: string;
+    products: Array<Object>;
 }
 
 const CatalogSchema = new Schema(

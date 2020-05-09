@@ -7,12 +7,13 @@ export interface IOrder extends Document {
     phone: string;
     email: string;
     address: string;
-    cart: Array<{ product: string; count: number }>;
+    cart: Array<Object>;
     payment: string;
     delivery: string;
     comment: string;
     time: string;
     date: Date;
+    status: string;
 }
 
 const OrderSchema = new Schema(
@@ -36,7 +37,10 @@ const OrderSchema = new Schema(
         address: String,
         cart: [
             {
-                product: String,
+                product: {
+                    type: Schema.Types.ObjectId,
+                    ref: "Product"
+                },
                 count: Number
             }
         ],
@@ -44,7 +48,11 @@ const OrderSchema = new Schema(
         delivery: String,
         comment: String,
         time: String,
-        date: Date
+        date: Date,
+        status: {
+            type: String,
+            default: "В обработке"
+        }
     },
     {
         timestamps: true

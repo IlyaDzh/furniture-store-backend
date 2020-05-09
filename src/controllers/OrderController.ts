@@ -1,12 +1,13 @@
 import express from "express";
 
-import { OrderModel } from "../models";
+import { OrderModel, UserModel } from "../models";
 import { IOrder } from "../models/Order";
 
 class OrderController {
     showAll(req: express.Request, res: express.Response) {
         OrderModel.find()
             .sort({ createdAt: -1 })
+            .populate("cart.product")
             .exec((err, orders: IOrder[]) => {
                 if (err) {
                     return res.status(500).json(err);
@@ -16,7 +17,8 @@ class OrderController {
             });
     }
 
-    create(req: express.Request, res: express.Response) {
+    create(req: any, res: express.Response) {
+        const userId: string = req.user && req.user._id;
         const postData = {
             type: req.body.type,
             fullname: req.body.fullname,
@@ -28,12 +30,26 @@ class OrderController {
             delivery: req.body.delivery,
             comment: req.body.comment,
             time: req.body.time,
-            date: req.body.date
+            date: req.body.date,
+            status: req.body.status
         };
         const order = new OrderModel(postData);
         order
             .save()
             .then((obj: any) => {
+                if (userId) {
+                    UserModel.findByIdAndUpdate(
+                        userId,
+                        { $push: { orders: obj._id } },
+                        { upsert: true },
+                        err => {
+                            if (err) {
+                                return res.status(500).json({ message: err });
+                            }
+                        }
+                    );
+                }
+
                 res.status(200).json(obj);
             })
             .catch(reason => {
