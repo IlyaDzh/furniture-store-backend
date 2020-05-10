@@ -10,6 +10,7 @@ class NewsController {
         };
 
         NewsModel.find()
+            .sort({ date: -1 })
             .skip((pageOptions.page - 1) * pageOptions.limit)
             .limit(pageOptions.limit)
             .exec((err, news) => {

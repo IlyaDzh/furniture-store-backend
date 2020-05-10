@@ -11,7 +11,7 @@ class UserController {
         UserModel.findById(userId)
             .populate({
                 path: "orders",
-                select: "_id createdAt cart status ",
+                select: "_id createdAt cart status",
                 populate: { path: "cart.product", select: "_id name price" }
             })
             .exec((err, user: IUser) => {
@@ -78,15 +78,19 @@ class UserController {
             postData.password = req.body.password;
         }
 
-        UserModel.findByIdAndUpdate(userId, { $set: postData }, { new: true }).exec(
-            (err, user) => {
+        UserModel.findByIdAndUpdate(userId, { $set: postData }, { new: true })
+            .populate({
+                path: "orders",
+                select: "_id createdAt cart status",
+                populate: { path: "cart.product", select: "_id name price" }
+            })
+            .exec((err, user) => {
                 if (err || !user) {
                     return res.status(404).json({ message: "User not found" });
                 }
 
                 res.status(200).json(user);
-            }
-        );
+            });
     }
 }
 

@@ -1,22 +1,25 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IComment extends Document {
-    name: string;
-    image: string;
-    text: string;
+    fullname: string;
+    email: string;
+    comment: string;
     date: Date;
 }
 
 const CommentSchema = new Schema(
     {
-        name: {
+        fullname: {
             type: String,
-            required: "Name is required"
+            required: "Fullname is required"
         },
-        image: String,
-        text: {
+        email: {
             type: String,
-            required: "Text is required"
+            required: "Email is required"
+        },
+        comment: {
+            type: String,
+            required: "Comment is required"
         },
         date: {
             type: Date,

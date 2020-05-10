@@ -37,20 +37,22 @@ class OrderController {
         order
             .save()
             .then((obj: any) => {
-                if (userId) {
-                    UserModel.findByIdAndUpdate(
-                        userId,
-                        { $push: { orders: obj._id } },
-                        { upsert: true },
-                        err => {
-                            if (err) {
-                                return res.status(500).json({ message: err });
+                order.populate("cart.product", "_id name price", () => {
+                    if (userId) {
+                        UserModel.findByIdAndUpdate(
+                            userId,
+                            { $push: { orders: obj._id } },
+                            { upsert: true },
+                            err => {
+                                if (err) {
+                                    return res.status(500).json({ message: err });
+                                }
                             }
-                        }
-                    );
-                }
+                        );
+                    }
 
-                res.status(200).json(obj);
+                    res.status(200).json(obj);
+                });
             })
             .catch(reason => {
                 res.status(500).json({ message: reason.message });
