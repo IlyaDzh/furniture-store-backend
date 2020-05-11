@@ -1,5 +1,5 @@
 {
-    "name": "furniture-store-server",
+    "name": "furniture-store-backend",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
