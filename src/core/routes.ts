@@ -60,6 +60,7 @@ const createRoutes = (app: express.Express) => {
     app.delete("/comments/:id", Comment.delete);
 
     app.get("/orders", Order.showAll);
+    app.get("/orders/:id", Order.showById);
     app.post("/orders/create", Order.create);
 };
 

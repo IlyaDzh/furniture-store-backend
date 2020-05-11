@@ -38,10 +38,10 @@ class NewsController {
     showById(req: express.Request, res: express.Response) {
         const id: string = req.params.id;
         NewsModel.findById(id, (err, news) => {
-            if (err) {
+            if (err || !news) {
                 return res.status(404).json({ message: "News not found" });
             }
-            res.json(news);
+            res.status(200).json(news);
         });
     }
 

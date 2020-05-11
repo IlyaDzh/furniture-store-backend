@@ -17,6 +17,24 @@ class OrderController {
             });
     }
 
+    showById(req: any, res: express.Response) {
+        const userId: string = req.user && req.user._id;
+        const id: string = req.params.id;
+        UserModel.findOne({ _id: userId, orders: id })
+            .populate({
+                path: "orders",
+                populate: { path: "cart.product", select: "_id name price" }
+            })
+            .exec((err, user) => {
+                if (err || !user) {
+                    return res.status(404).json({ message: "Order not found" });
+                }
+                res.status(200).json(
+                    user.orders.find((item: any) => item._id == id)
+                );
+            });
+    }
+
     create(req: any, res: express.Response) {
         const userId: string = req.user && req.user._id;
         const postData = {
@@ -38,7 +56,7 @@ class OrderController {
             .save()
             .then((obj: any) => {
                 order.populate("cart.product", "_id name price", () => {
-                    if (userId) {
+                    if (userId && obj.type === "Оформление заказа") {
                         UserModel.findByIdAndUpdate(
                             userId,
                             { $push: { orders: obj._id } },

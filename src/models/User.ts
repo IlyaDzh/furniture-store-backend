@@ -8,7 +8,7 @@ export interface IUser extends Document {
     email: string;
     password: string;
     address: string;
-    orders: string;
+    orders: Array<Object>;
 }
 
 const UserSchema = new Schema(
@@ -17,10 +17,7 @@ const UserSchema = new Schema(
             type: String,
             required: "Fullname is required"
         },
-        phone: {
-            type: String,
-            required: "Phone number is required!"
-        },
+        phone: String,
         email: {
             type: String,
             unique: true,
