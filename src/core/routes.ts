@@ -62,6 +62,8 @@ const createRoutes = (app: express.Express) => {
     app.get("/orders", Order.showAll);
     app.get("/orders/:id", Order.showById);
     app.post("/orders/create", Order.create);
+    app.put("/orders/:id", Order.update);
+    app.delete("/orders/:id", Order.delete);
 };
 
 export default createRoutes;

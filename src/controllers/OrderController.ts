@@ -76,6 +76,39 @@ class OrderController {
                 res.status(500).json({ message: reason.message });
             });
     }
+
+    update(req: express.Request, res: express.Response) {
+        const id: string = req.params.id;
+        const postData = {
+            status: req.body.status
+        };
+        OrderModel.findByIdAndUpdate(
+            id,
+            { $set: postData },
+            { new: true },
+            (err, order) => {
+                if (err || !order) {
+                    return res.status(404).json({ message: "Order not found" });
+                }
+                res.status(200).json(order);
+            }
+        );
+    }
+
+    delete(req: express.Request, res: express.Response) {
+        const id: string = req.params.id;
+        OrderModel.findOneAndRemove({ _id: id })
+            .then(order => {
+                if (order) {
+                    res.status(200).json({
+                        message: "Order deleted"
+                    });
+                }
+            })
+            .catch(() => {
+                res.status(404).json({ message: `Order not found` });
+            });
+    }
 }
 
 export default OrderController;
