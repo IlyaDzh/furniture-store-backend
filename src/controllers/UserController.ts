@@ -57,7 +57,8 @@ class UserController {
                 const token: string = createJWTToken(user);
                 res.status(200).json({
                     status: "Success",
-                    token
+                    token,
+                    admin: user.admin
                 });
             } else {
                 res.status(401).json({

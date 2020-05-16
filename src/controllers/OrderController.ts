@@ -4,7 +4,12 @@ import { OrderModel, UserModel } from "../models";
 import { IOrder } from "../models/Order";
 
 class OrderController {
-    showAll(req: express.Request, res: express.Response) {
+    showAll(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
         OrderModel.find()
             .sort({ createdAt: -1 })
             .populate("cart.product")
@@ -77,7 +82,12 @@ class OrderController {
             });
     }
 
-    update(req: express.Request, res: express.Response) {
+    update(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
         const id: string = req.params.id;
         const postData = {
             status: req.body.status
@@ -95,18 +105,36 @@ class OrderController {
         );
     }
 
-    delete(req: express.Request, res: express.Response) {
+    delete(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
         const id: string = req.params.id;
         OrderModel.findOneAndRemove({ _id: id })
             .then(order => {
                 if (order) {
+                    if (order.type === "Оформление заказа") {
+                        UserModel.findOneAndUpdate(
+                            { orders: id },
+                            { $pull: { orders: id } },
+                            { upsert: true },
+                            err => {
+                                if (err) {
+                                    return res.status(500).json({ message: err });
+                                }
+                            }
+                        );
+                    }
+
                     res.status(200).json({
                         message: "Order deleted"
                     });
                 }
             })
             .catch(() => {
-                res.status(404).json({ message: `Order not found` });
+                res.status(404).json({ message: "Order not found" });
             });
     }
 }

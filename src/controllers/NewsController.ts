@@ -57,7 +57,12 @@ class NewsController {
             });
     }
 
-    create(req: express.Request, res: express.Response) {
+    create(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
         const postData = {
             image: req.body.image,
             title: req.body.title,
@@ -75,7 +80,12 @@ class NewsController {
             });
     }
 
-    update(req: express.Request, res: express.Response) {
+    update(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
         const id: string = req.params.id;
         const postData = {
             image: req.body.image,
@@ -97,7 +107,12 @@ class NewsController {
         );
     }
 
-    delete(req: express.Request, res: express.Response) {
+    delete(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
         const id: string = req.params.id;
         NewsModel.findOneAndRemove({ _id: id })
             .then(news => {

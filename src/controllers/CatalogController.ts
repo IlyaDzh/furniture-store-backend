@@ -16,7 +16,12 @@ class CatalogController {
             });
     }
 
-    create(req: express.Request, res: express.Response) {
+    create(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
         const postData = {
             title: req.body.title,
             path: req.body.path,

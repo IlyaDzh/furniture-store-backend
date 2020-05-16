@@ -3,6 +3,7 @@ import isEmail from "validator/lib/isEmail";
 import { generatePasswordHash } from "../utils";
 
 export interface IUser extends Document {
+    admin: Boolean;
     fullname: string;
     phone: string;
     email: string;
@@ -13,10 +14,11 @@ export interface IUser extends Document {
 
 const UserSchema = new Schema(
     {
-        fullname: {
-            type: String,
-            required: "Fullname is required"
+        admin: {
+            type: Boolean,
+            default: false
         },
+        fullname: String,
         phone: String,
         email: {
             type: String,

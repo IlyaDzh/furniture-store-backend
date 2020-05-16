@@ -30,7 +30,12 @@ class FactoryController {
         });
     }
 
-    updateAbout(req: express.Request, res: express.Response) {
+    updateAbout(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
         const postData = {
             text: req.body.text,
             gallery_types: req.body.gallery_types,
@@ -50,7 +55,12 @@ class FactoryController {
         );
     }
 
-    updateContacts(req: express.Request, res: express.Response) {
+    updateContacts(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
         const postData = {
             number: req.body.number,
             email: req.body.email,
@@ -71,7 +81,12 @@ class FactoryController {
         );
     }
 
-    updateService(req: express.Request, res: express.Response) {
+    updateService(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
         const postData = {
             payment: req.body.payment,
             delivery: req.body.delivery

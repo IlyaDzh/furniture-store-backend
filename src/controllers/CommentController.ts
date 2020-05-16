@@ -65,7 +65,12 @@ class CommentController {
             });
     }
 
-    update(req: express.Request, res: express.Response) {
+    update(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
         const id: string = req.params.id;
         const postData = {
             fullname: req.body.fullname,
@@ -86,7 +91,12 @@ class CommentController {
         );
     }
 
-    delete(req: express.Request, res: express.Response) {
+    delete(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
         const id: string = req.params.id;
         CommentModel.findOneAndRemove({ _id: id })
             .then(comment => {
