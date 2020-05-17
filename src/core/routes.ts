@@ -27,6 +27,7 @@ const createRoutes = (app: express.Express) => {
     const Order = new OrderController();
 
     app.get("/user/me", User.getMe);
+    app.get("/user/stats", User.getCount);
     app.post("/user/signup", User.create);
     app.post("/user/signin", User.login);
     app.put("/user/update", User.update);
@@ -55,11 +56,13 @@ const createRoutes = (app: express.Express) => {
 
     app.get("/comments", Comment.showAll);
     app.get("/comments/last", Comment.showLast);
+    app.get("/comments/stats", Comment.getCount);
     app.post("/comments/create", Comment.create);
     app.put("/comments/:id", Comment.update);
     app.delete("/comments/:id", Comment.delete);
 
     app.get("/orders", Order.showAll);
+    app.get("/orders/stats", Order.getCount);
     app.get("/orders/:id", Order.showById);
     app.post("/orders/create", Order.create);
     app.put("/orders/:id", Order.update);

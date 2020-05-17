@@ -137,6 +137,42 @@ class OrderController {
                 res.status(404).json({ message: "Order not found" });
             });
     }
+
+    getCount(req: express.Request, res: express.Response) {
+        Promise.all([
+            OrderModel.countDocuments({ type: "Оформление заказа" }),
+            OrderModel.countDocuments({
+                type: "Оформление заказа",
+                createdAt: {
+                    $gte: new Date(new Date().getTime() - 31 * 60 * 60 * 24 * 1000)
+                }
+            }),
+            OrderModel.countDocuments({
+                type: "Оформление заказа",
+                createdAt: {
+                    $gte: new Date(new Date().getTime() - 7 * 60 * 60 * 24 * 1000)
+                }
+            }),
+            OrderModel.countDocuments({
+                type: "Оформление заказа",
+                createdAt: {
+                    $gte: new Date(new Date().getTime() - 1 * 60 * 60 * 24 * 1000)
+                }
+            })
+        ])
+            .then(results => {
+                const [all, lastMonth, lastWeek, lastDay] = results;
+                res.status(200).json({
+                    all,
+                    lastMonth,
+                    lastWeek,
+                    lastDay
+                });
+            })
+            .catch(err => {
+                res.status(500).json(err);
+            });
+    }
 }
 
 export default OrderController;

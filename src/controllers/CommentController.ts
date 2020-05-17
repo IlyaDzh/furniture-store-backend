@@ -110,6 +110,39 @@ class CommentController {
                 res.status(404).json({ message: `Comment not found` });
             });
     }
+
+    getCount(req: express.Request, res: express.Response) {
+        Promise.all([
+            CommentModel.countDocuments(),
+            CommentModel.countDocuments({
+                createdAt: {
+                    $gte: new Date(new Date().getTime() - 31 * 60 * 60 * 24 * 1000)
+                }
+            }),
+            CommentModel.countDocuments({
+                createdAt: {
+                    $gte: new Date(new Date().getTime() - 7 * 60 * 60 * 24 * 1000)
+                }
+            }),
+            CommentModel.countDocuments({
+                createdAt: {
+                    $gte: new Date(new Date().getTime() - 1 * 60 * 60 * 24 * 1000)
+                }
+            })
+        ])
+            .then(results => {
+                const [all, lastMonth, lastWeek, lastDay] = results;
+                res.status(200).json({
+                    all,
+                    lastMonth,
+                    lastWeek,
+                    lastDay
+                });
+            })
+            .catch(err => {
+                res.status(500).json(err);
+            });
+    }
 }
 
 export default CommentController;
