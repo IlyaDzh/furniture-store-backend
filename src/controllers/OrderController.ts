@@ -1,7 +1,6 @@
 import express from "express";
 
 import { OrderModel, UserModel } from "../models";
-import { IOrder } from "../models/Order";
 
 class OrderController {
     showAll(req: any, res: express.Response) {
@@ -13,7 +12,7 @@ class OrderController {
         OrderModel.find()
             .sort({ createdAt: -1 })
             .populate("cart.product")
-            .exec((err, orders: IOrder[]) => {
+            .exec((err, orders) => {
                 if (err) {
                     return res.status(500).json(err);
                 }

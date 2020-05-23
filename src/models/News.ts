@@ -4,7 +4,7 @@ export interface INews extends Document {
     image: string;
     title: string;
     short_description: string;
-    description: Array<Object>;
+    description: string;
     date: Date;
 }
 
@@ -19,19 +19,10 @@ const NewsSchema = new Schema(
             required: "Title is required"
         },
         short_description: String,
-        description: [
-            {
-                type: {
-                    type: String,
-                    enum: ["Text", "Image"],
-                    default: "Text"
-                },
-                content: {
-                    type: String,
-                    required: "Content is required"
-                }
-            }
-        ],
+        description: {
+            type: String,
+            required: "Content is required"
+        },
         date: {
             type: Date,
             default: new Date()

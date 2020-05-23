@@ -4,6 +4,18 @@ import { CommentModel } from "../models";
 
 class CommentController {
     showAll(req: express.Request, res: express.Response) {
+        CommentModel.find()
+            .sort({ date: -1 })
+            .exec((err, comments) => {
+                if (err) {
+                    return res.status(500).json(err);
+                }
+
+                res.status(200).json(comments);
+            });
+    }
+
+    showByPage(req: express.Request, res: express.Response) {
         const pageOptions = {
             page: parseInt(req.query.page) || 1,
             limit: 9

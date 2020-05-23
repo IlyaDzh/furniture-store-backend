@@ -13,7 +13,7 @@ import {
 } from "../controllers";
 import { checkAuth } from "../middlewares";
 
-const createRoutes = (app: express.Express) => {
+const createRoutes = (app: express.Express, upload: any) => {
     app.use(cors());
     app.use(bodyParser.json());
     app.use(checkAuth);
@@ -47,14 +47,16 @@ const createRoutes = (app: express.Express) => {
     app.put("/info/service", Factory.updateService);
     app.put("/info/contacts", Factory.updateContacts);
 
-    app.get("/news", News.showAll);
+    app.get("/news", News.showByPage);
+    app.get("/news/all", News.showAll);
     app.get("/news/last", News.showLast);
     app.get("/news/:id", News.showById);
-    app.post("/news/create", News.create);
-    app.put("/news/:id", News.update);
+    app.post("/news/create", upload.single("file"), News.create);
+    app.put("/news/:id", upload.single("file"), News.update);
     app.delete("/news/:id", News.delete);
 
-    app.get("/comments", Comment.showAll);
+    app.get("/comments", Comment.showByPage);
+    app.get("/comments/all", Comment.showAll);
     app.get("/comments/last", Comment.showLast);
     app.get("/comments/stats", Comment.getCount);
     app.post("/comments/create", Comment.create);

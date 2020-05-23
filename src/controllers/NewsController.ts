@@ -1,9 +1,22 @@
 import express from "express";
 
 import { NewsModel } from "../models";
+import { removeNullField } from "../utils";
 
 class NewsController {
     showAll(req: express.Request, res: express.Response) {
+        NewsModel.find()
+            .sort({ date: -1 })
+            .exec((err, news) => {
+                if (err) {
+                    return res.status(500).json(err);
+                }
+
+                res.status(200).json(news);
+            });
+    }
+
+    showByPage(req: express.Request, res: express.Response) {
         const pageOptions = {
             page: parseInt(req.query.page) || 1,
             limit: 9
@@ -64,7 +77,7 @@ class NewsController {
         }
 
         const postData = {
-            image: req.body.image,
+            image: req.file.path,
             title: req.body.title,
             short_description: req.body.short_description,
             description: req.body.description,
@@ -88,12 +101,13 @@ class NewsController {
 
         const id: string = req.params.id;
         const postData = {
-            image: req.body.image,
+            image: req.file && req.file.path || null,
             title: req.body.title,
             short_description: req.body.short_description,
             description: req.body.description,
             date: req.body.date
         };
+        removeNullField(postData);
         NewsModel.findByIdAndUpdate(
             id,
             { $set: postData },
