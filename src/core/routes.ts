@@ -43,9 +43,7 @@ const createRoutes = (app: express.Express, upload: any) => {
     app.get("/info/about", Factory.showAbout);
     app.get("/info/service", Factory.showService);
     app.get("/info/contacts", Factory.showContacts);
-    app.put("/info/about", Factory.updateAbout);
-    app.put("/info/service", Factory.updateService);
-    app.put("/info/contacts", Factory.updateContacts);
+    app.put("/info/update", Factory.update);
 
     app.get("/news", News.showByPage);
     app.get("/news/all", News.showAll);

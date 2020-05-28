@@ -2,9 +2,8 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IFactory extends Document {
     about: {
-        text: Array<string>;
+        text: string;
         gallery_types: Array<string>;
-        gallery: Array<string>;
         stages: Array<{ title: string; stage: string }>;
     };
     service: {
@@ -12,19 +11,18 @@ export interface IFactory extends Document {
         delivery: Array<{ title: string; content: string }>;
     };
     contacts: {
-        number: Array<string>;
-        email: Array<string>;
+        number: string;
+        email: string;
         time: Array<string>;
-        address_office: Array<string>;
-        address_prod: Array<string>;
+        address_office: string;
+        address_prod: string;
     };
 }
 
 const FactorySchema = new Schema({
     about: {
-        text: [String],
+        text: String,
         gallery_types: [String],
-        gallery: [String],
         stages: [
             {
                 title: String,
@@ -47,11 +45,11 @@ const FactorySchema = new Schema({
         ]
     },
     contacts: {
-        number: [String],
-        email: [String],
+        number: String,
+        email: String,
         time: [String],
-        address_office: [String],
-        address_prod: [String]
+        address_office: String,
+        address_prod: String
     }
 });
 

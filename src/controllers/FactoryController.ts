@@ -30,76 +30,33 @@ class FactoryController {
         });
     }
 
-    updateAbout(req: any, res: express.Response) {
+    update(req: any, res: express.Response) {
         const admin: string = req.user && req.user.admin;
         if (!admin) {
             return res.status(403).json({ message: "No access" });
         }
 
         const postData = {
-            text: req.body.text,
-            gallery_types: req.body.gallery_types,
-            gallery: req.body.gallery,
-            stages: req.body.stages
-        };
-        FactoryModel.findOneAndUpdate(
-            {},
-            { $set: { about: postData } },
-            { new: true, upsert: true },
-            (err, result) => {
-                if (err) {
-                    return res.status(500).json(err);
-                }
-                res.status(200).json(result.about);
+            about: {
+                text: req.body.text
+            },
+            contacts: {
+                number: req.body.number,
+                email: req.body.email,
+                time: req.body.time,
+                address_office: req.body.address_office,
+                address_prod: req.body.address_prod
             }
-        );
-    }
-
-    updateContacts(req: any, res: express.Response) {
-        const admin: string = req.user && req.user.admin;
-        if (!admin) {
-            return res.status(403).json({ message: "No access" });
-        }
-
-        const postData = {
-            number: req.body.number,
-            email: req.body.email,
-            time: req.body.time,
-            address_office: req.body.address_office,
-            address_prod: req.body.address_prod
         };
         FactoryModel.findOneAndUpdate(
             {},
-            { $set: { contacts: postData } },
+            { $set: postData },
             { new: true, upsert: true },
             (err, result) => {
                 if (err) {
                     return res.status(500).json(err);
                 }
-                res.status(200).json(result.contacts);
-            }
-        );
-    }
-
-    updateService(req: any, res: express.Response) {
-        const admin: string = req.user && req.user.admin;
-        if (!admin) {
-            return res.status(403).json({ message: "No access" });
-        }
-
-        const postData = {
-            payment: req.body.payment,
-            delivery: req.body.delivery
-        };
-        FactoryModel.findOneAndUpdate(
-            {},
-            { $set: { service: postData } },
-            { new: true, upsert: true },
-            (err, result) => {
-                if (err) {
-                    return res.status(500).json(err);
-                }
-                res.status(200).json(result.service);
+                res.status(200).json(result);
             }
         );
     }
