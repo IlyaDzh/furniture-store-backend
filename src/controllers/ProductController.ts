@@ -22,14 +22,16 @@ class ProductController {
             return res.status(403).json({ message: "No access" });
         }
 
+        const images = req.files.map((image: any) => image.path);
+
         const postData = {
             type: req.body.type,
             new: req.body.new,
             hit: req.body.hit,
             name: req.body.name,
-            images: req.body.images,
-            chars: req.body.chars,
-            price: req.body.price
+            images: images,
+            chars: JSON.parse(req.body.chars),
+            price: JSON.parse(req.body.price)
         };
         const product = new ProductModel(postData);
         product
@@ -50,6 +52,37 @@ class ProductController {
             })
             .catch(reason => {
                 res.status(500).json({ message: reason.message });
+            });
+    }
+
+    delete(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
+        const id: string = req.params.id;
+        ProductModel.findOneAndRemove({ _id: id })
+            .then(product => {
+                if (product) {
+                    CatalogModel.findOneAndUpdate(
+                        { products: id },
+                        { $pull: { products: id } },
+                        { upsert: true },
+                        err => {
+                            if (err) {
+                                return res.status(500).json({ message: err });
+                            }
+                        }
+                    );
+
+                    res.status(200).json({
+                        message: "Product deleted"
+                    });
+                }
+            })
+            .catch(() => {
+                res.status(404).json({ message: "Product not found" });
             });
     }
 

@@ -38,7 +38,8 @@ const createRoutes = (app: express.Express, upload: any) => {
     app.get("/product/new", Product.getNew);
     app.get("/product/popular", Product.getPopular);
     app.get("/product/:id", Product.showById);
-    app.post("/product/create", Product.create);
+    app.post("/product/create", upload.array("files"), Product.create);
+    app.delete("/product/:id", Product.delete);
 
     app.get("/info/about", Factory.showAbout);
     app.get("/info/service", Factory.showService);

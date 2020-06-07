@@ -3,8 +3,6 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IFactory extends Document {
     about: {
         text: string;
-        gallery_types: Array<string>;
-        stages: Array<{ title: string; stage: string }>;
     };
     service: {
         payment: Array<{ title: string; content: string }>;
@@ -21,14 +19,7 @@ export interface IFactory extends Document {
 
 const FactorySchema = new Schema({
     about: {
-        text: String,
-        gallery_types: [String],
-        stages: [
-            {
-                title: String,
-                stage: String
-            }
-        ]
+        text: String
     },
     service: {
         payment: [
