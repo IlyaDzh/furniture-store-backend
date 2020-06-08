@@ -86,6 +86,37 @@ class ProductController {
             });
     }
 
+    update(req: any, res: express.Response) {
+        const admin: string = req.user && req.user.admin;
+        if (!admin) {
+            return res.status(403).json({ message: "No access" });
+        }
+
+        const id: string = req.params.id;
+        const images = req.files.length ? req.files.map((image: any) => image.path) : null;
+        const postData: any = {
+            new: req.body.new,
+            hit: req.body.hit,
+            name: req.body.name,
+            chars: JSON.parse(req.body.chars),
+            price: JSON.parse(req.body.price)
+        };
+        if (images) {
+            postData.images = images;
+        }
+        ProductModel.findByIdAndUpdate(
+            id,
+            { $set: postData },
+            { new: true },
+            (err, product) => {
+                if (err) {
+                    return res.status(404).json(err);
+                }
+                res.status(200).json(product);
+            }
+        );
+    }
+
     getNew(req: express.Request, res: express.Response) {
         ProductModel.find({ new: true }, (err, products) => {
             if (err || !products) {
